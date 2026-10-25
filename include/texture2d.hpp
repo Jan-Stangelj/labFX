@@ -2,17 +2,17 @@
 
 #include "glad/glad.h"
 
-class texture2 {
+class texture2d {
 public:
 
-    texture2() = default;
-    ~texture2();
+    texture2d() = default;
+    ~texture2d();
 
-    texture2(const texture2&) = delete;
-    texture2& operator=(const texture2&) = delete;
+    texture2d(const texture2d&) = delete;
+    texture2d& operator=(const texture2d&) = delete;
 
-    texture2(texture2&& other) noexcept;
-    texture2& operator=(texture2&& other) noexcept;
+    texture2d(texture2d&& other) noexcept;
+    texture2d& operator=(texture2d&& other) noexcept;
 
     bool create(GLsizei width, GLsizei height, GLenum internalFormat, bool mipmapping);
     bool create(const char* file, GLenum internalFormat, bool mipmapping);

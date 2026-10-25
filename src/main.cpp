@@ -3,7 +3,7 @@
 
 #include "shader.hpp"
 #include "ssbo.hpp"
-#include "texture2.hpp"
+#include "texture2d.hpp"
 
 #include <iostream>
 
@@ -72,7 +72,7 @@ int main(void) {
     ssbo indexBuffer;
     indexBuffer.create(sizeof(indices), indices);
 
-    texture2 texture;
+    texture2d texture;
     texture.create("../assets/textures/red_brick.png", GL_RGB8, true);
     texture.generateMipmaps();
 
