@@ -52,7 +52,7 @@ bool shader::loadFromFile(const char* vertexPath, const char* fragmentPath) {
 
     } catch (std::ifstream::failure& e) {
 
-        std::cout << "WARNING: Failed to read shader files, no changes were made:\n- Vertex: " << vertexPath << "\n- Fragment: " << fragmentPath << '\n';
+        std::cout << "WARNING: Failed to read shader files, did nothing:\n- Vertex: " << vertexPath << "\n- Fragment: " << fragmentPath << '\n';
         return false;
     }
 
@@ -61,7 +61,7 @@ bool shader::loadFromFile(const char* vertexPath, const char* fragmentPath) {
 
 bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     if (vertexCode == nullptr || fragmentCode == nullptr) {
-        std::cout << "WARNING: No shader source code provided, no changes were made.\n";
+        std::cout << "WARNING: No shader source code provided. Did nothing.\n";
         return false;
     }
 
@@ -125,7 +125,7 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
 
 bool shader::use() const {
     if (m_id == 0) {
-        std::cout << "NOTE: Bind called with no shader present. Done nothing.\n";
+        std::cout << "NOTE: Use called with no shader present. Did nothing.\n";
         return false;
     }
     

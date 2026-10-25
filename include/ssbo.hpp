@@ -20,5 +20,6 @@ public:
 private:
 
     GLuint m_id = 0;
+    GLsizei m_size = 0;
 
 };

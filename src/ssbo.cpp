@@ -29,6 +29,8 @@ bool ssbo::create(GLsizeiptr size, const void* data) {
         return false;
     }
 
+    m_size = size;
+
     if (m_id != 0) {
         std::cout << "WARNING: SSBO already present. Deleting and re-allocating.\n";
         glDeleteBuffers(1, &m_id);
@@ -42,14 +44,14 @@ bool ssbo::create(GLsizeiptr size, const void* data) {
         return false;
     }
 
-    glNamedBufferStorage(m_id, size, data, 0); // need to add GL_DYNAMIC_STORAGE_BIT back if you want subsoquent read/write on cpu
+    glNamedBufferStorage(m_id, size, data, 0); // need to add GL_DYNAMIC_STORAGE_BIT back if you want subsequent read/write on cpu
 
     return true;
 }
 
 bool ssbo::bind(GLuint bindingPoint) const {
     if (m_id == 0) {
-        std::cout << "NOTE: Bind called with no SSBO present. Done nothing.\n";
+        std::cout << "NOTE: bind called with no SSBO present. Did nothing.\n";
         return false;
     }
 

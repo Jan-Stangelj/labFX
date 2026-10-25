@@ -1,13 +1,11 @@
 #include "glad/glad.h"
 #include "SDL3/SDL.h"
 
-#include "stb/stb_image.h"
-
 #include "shader.hpp"
 #include "ssbo.hpp"
+#include "texture2.hpp"
 
 #include <iostream>
-#include <cmath>
 
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char *message, const void *userParam);
 
@@ -53,14 +51,14 @@ int main(void) {
     glViewport(0, 0, 800, 600);
 
     
-    GLfloat vertices[] = {
+    constexpr GLfloat vertices[] = {
         //  x          y         z         u         v
         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f,  0.0f, 1.0f // top left
     };
-    GLuint indices[] = {
+    constexpr GLuint indices[] = {
         0, 1, 3,
         1, 2, 3
     }; 
@@ -74,25 +72,9 @@ int main(void) {
     ssbo indexBuffer;
     indexBuffer.create(sizeof(indices), indices);
 
-    GLuint texture;
-    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-
-    glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("../assets/textures/red_brick.png", &width, &height, &nrChannels, 3);
-    if (data != nullptr) {
-        glTextureStorage2D(texture, 1 + static_cast<GLint>(std::log2(std::max(width, height))), GL_RGB8, width, height);
-        glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateTextureMipmap(texture);
-    }
-    else {
-        std::cout << "ERROR: Failed to load texture\n";
-    }
-    stbi_image_free(data);
+    texture2 texture;
+    texture.create("../assets/textures/red_brick.png", GL_RGB8, true);
+    texture.generateMipmaps();
 
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
@@ -102,9 +84,7 @@ int main(void) {
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-
-            if (event.type == SDL_EVENT_QUIT) running = false;
-            
+            if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) running = false;
         }
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -114,7 +94,7 @@ int main(void) {
 
         vertexBuffer.bind(0);
         indexBuffer.bind(1);
-        glBindTextureUnit(0, texture);
+        texture.bind(0);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
@@ -127,7 +107,13 @@ int main(void) {
     return 0;
 }
 
+// Source: https://learnopengl.com/In-Practice/Debugging
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char *message, const void *userParam) {
+
+    // Prevent unused warnings
+    (void)length;
+    (void)userParam;
+
     // ignore non-significant error/warning codes
     if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
 

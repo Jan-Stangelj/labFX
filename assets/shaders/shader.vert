@@ -12,12 +12,8 @@ layout(binding = 1, std430) readonly buffer indicesBuffer {
     uint indices[];
 };
 
-vec3 getPosition(vertex v) {
-    return vec3(v.position[0], v.position[1], v.position[2]);
-}
-vec2 getUV(vertex v) {
-    return vec2(v.uv[0], v.uv[1]);
-}
+vec3 getPosition(vertex v) { return vec3(v.position[0], v.position[1], v.position[2]); }
+vec2 getUV(vertex v) { return vec2(v.uv[0], v.uv[1]); }
 
 layout(location = 0) out vec2 uvOut;
 
