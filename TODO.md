@@ -1,11 +1,11 @@
 RAII abstraction for ogl objects:
-- ssbo -> DONE
-- texture2d -> DONE
-- texture2d bindless
-- texture2d parameter editing 
-- shaders -> DONE
-- compute shaders
-- framebuffer
+- init/destroy function, window class, (sdl3 error checking?)
 - uniform buffer
-- model loading
 - basic fly camera
+- texture2d bindless
+- model loading
+- framebuffer
+- compute shaders
+- texture2d parameter editing
+- resizable viewport
+- optimized logging
