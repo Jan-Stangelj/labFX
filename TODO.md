@@ -12,3 +12,5 @@ Misc (in no order):
 - resizable viewport
 - optimized logging
 - SDL3 error checking
+- include stb as subdirectory
+- only compile cmake subdirectories if the package isnt found
