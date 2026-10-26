@@ -115,7 +115,12 @@ bool texture2d::loadData(GLenum dataFormat, GLenum dataType, const void* data, G
 
 bool texture2d::generateMipmaps() const {
     if (m_id == 0) {
-        std::cout << "NOTE: genMipmaps called with no 2D texture present. Did nothing.\n";
+        std::cout << "NOTE: generateMipmaps called with no 2D texture present. Did nothing.\n";
+        return false;
+    }
+
+    if (m_mips == 1) {
+        std::cout << "NOTE: generateMipmaps called with only 1 active 2D texture mip level. Did nothing.\n";
         return false;
     }
 
