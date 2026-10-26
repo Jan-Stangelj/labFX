@@ -1,6 +1,7 @@
 #include "glad/glad.h"
 #include "SDL3/SDL.h"
 
+#include "init.hpp"
 #include "shader.hpp"
 #include "ssbo.hpp"
 #include "texture2d.hpp"
@@ -11,11 +12,7 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum 
 
 int main(void) {
 
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+    init(true);
 
     SDL_Window* window = SDL_CreateWindow("glBox", 800, 600, SDL_WINDOW_OPENGL);
     if (window == nullptr) {
@@ -103,8 +100,10 @@ int main(void) {
 
     SDL_GL_DestroyContext(context);
     SDL_DestroyWindow(window);
-    SDL_Quit();
+    quit();
+
     return 0;
+
 }
 
 // Source: https://learnopengl.com/In-Practice/Debugging
