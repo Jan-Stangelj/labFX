@@ -46,10 +46,6 @@ int main(void) {
     buffer colorMixBuffer;
     colorMixBuffer.create(sizeof(color), color);
 
-    GLuint ubo = 0;
-    glCreateBuffers(1, &ubo);
-    glNamedBufferStorage(ubo, sizeof(color), color, 0);
-
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
 
@@ -67,7 +63,7 @@ int main(void) {
         vertexBuffer.bind(bufferTarget::SHADER_STORAGE_BUFFER, 0);
         indexBuffer.bind( bufferTarget::SHADER_STORAGE_BUFFER, 1);
         texture.bind(0);
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo);
+        colorMixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 0);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
