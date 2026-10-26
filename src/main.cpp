@@ -1,7 +1,7 @@
 #include "init.hpp"
 #include "window.hpp"
 #include "shader.hpp"
-#include "ssbo.hpp"
+#include "buffer.hpp"
 #include "texture2d.hpp"
 
 int main(void) {
@@ -28,15 +28,27 @@ int main(void) {
     glGenVertexArrays(1, &emptyVao);
     glBindVertexArray(emptyVao);
 
-    ssbo vertexBuffer;
+    buffer vertexBuffer;
     vertexBuffer.create(sizeof(vertices), vertices);
 
-    ssbo indexBuffer;
+    buffer indexBuffer;
     indexBuffer.create(sizeof(indices), indices);
 
     texture2d texture;
     texture.create("../assets/textures/red_brick.png", GL_RGB8, true);
     texture.generateMipmaps();
+
+    constexpr GLfloat color[] = {
+        //  r         g         b         a
+        0.5f, 1.0f, 0.5f, 1.0f
+    };
+
+    buffer colorMixBuffer;
+    colorMixBuffer.create(sizeof(color), color);
+
+    GLuint ubo = 0;
+    glCreateBuffers(1, &ubo);
+    glNamedBufferStorage(ubo, sizeof(color), color, 0);
 
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
@@ -52,9 +64,10 @@ int main(void) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        vertexBuffer.bind(0);
-        indexBuffer.bind(1);
+        vertexBuffer.bind(bufferTarget::SHADER_STORAGE_BUFFER, 0);
+        indexBuffer.bind( bufferTarget::SHADER_STORAGE_BUFFER, 1);
         texture.bind(0);
+        glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         

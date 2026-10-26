@@ -1,20 +1,20 @@
-#include "ssbo.hpp"
+#include "buffer.hpp"
 
 #include <iostream>
 
-ssbo::~ssbo() {
+buffer::~buffer() {
     if (m_id != 0) glDeleteBuffers(1, &m_id);
 }
 
-ssbo::ssbo(ssbo&& other) noexcept {
+buffer::buffer(buffer&& other) noexcept {
     m_id = other.m_id;
     other.m_id = 0;
 }
 
-ssbo& ssbo::operator=(ssbo&& other) noexcept {
+buffer& buffer::operator=(buffer&& other) noexcept {
     if (this != &other) {
         if (m_id != 0) {
-            std::cout << "WARNING: SSBO already present on move destination. Overwriting.\n";
+            std::cout << "WARNING: Buffer already present on move destination. Overwriting.\n";
             glDeleteBuffers(1, &m_id);
         }
         m_id = other.m_id;
@@ -23,7 +23,7 @@ ssbo& ssbo::operator=(ssbo&& other) noexcept {
     return *this;
 }
 
-bool ssbo::create(GLsizeiptr size, const void* data) {
+bool buffer::create(GLsizeiptr size, const void* data) {
     if (size == 0) {
         std::cerr << "ERROR: Cannot create buffer with size of 0. Aborting\n";
         return false;
@@ -32,7 +32,7 @@ bool ssbo::create(GLsizeiptr size, const void* data) {
     m_size = size;
 
     if (m_id != 0) {
-        std::cout << "WARNING: SSBO already present. Deleting and re-allocating.\n";
+        std::cout << "WARNING: Buffer already present. Deleting and re-allocating.\n";
         glDeleteBuffers(1, &m_id);
     }
 
@@ -40,7 +40,7 @@ bool ssbo::create(GLsizeiptr size, const void* data) {
     glCreateBuffers(1, &m_id);
 
     if (m_id == 0) {
-        std::cout << "ERROR: Failed to create SSBO. Aborting.\n";
+        std::cout << "ERROR: Failed to create buffer. Aborting.\n";
         return false;
     }
 
@@ -49,12 +49,12 @@ bool ssbo::create(GLsizeiptr size, const void* data) {
     return true;
 }
 
-bool ssbo::bind(GLuint bindingPoint) const {
+bool buffer::bind(bufferTarget type, GLuint bindingPoint) const {
     if (m_id == 0) {
-        std::cout << "NOTE: bind called with no SSBO present. Did nothing.\n";
+        std::cout << "NOTE: bind called with no buffer present. Did nothing.\n";
         return false;
     }
 
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingPoint, m_id);
+    glBindBufferBase(static_cast<GLenum>(type), bindingPoint, m_id);
     return true;
 }

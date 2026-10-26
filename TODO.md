@@ -1,6 +1,7 @@
 Main:
-- init/destroy function, window class
-- uniform buffer
+- ~~init/destroy function, window class~~
+- ~~uniform buffer~~
+- ssbo and ubo editing
 - basic fly camera
 - texture2d bindless
 - model loading
