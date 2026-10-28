@@ -44,8 +44,26 @@ bool buffer::create(GLsizeiptr size, const void* data) {
         return false;
     }
 
-    glNamedBufferStorage(m_id, size, data, 0); // need to add GL_DYNAMIC_STORAGE_BIT back if you want subsequent read/write on cpu
+    glNamedBufferStorage(m_id, size, data, GL_DYNAMIC_STORAGE_BIT);
 
+    return true;
+}
+
+bool buffer::write(GLintptr offset, GLsizeiptr size, const void* data) const {
+    if (m_id == 0) {
+        std::cout << "NOTE: write called with no buffer present. Did nothing.\n";
+        return false;
+    }
+    if (data == nullptr) {
+        std::cout << "WARNING: no data passed to buffer write. Aborting.\n";
+        return false;
+    }
+    if (offset < 0 || size < 0 || offset > m_size || size > m_size - offset) {
+        std::cerr << "ERROR: write range is outside buffer bounds. Aborting.\n";
+        return false;
+    }
+
+    glNamedBufferSubData(m_id, offset, size, data);
     return true;
 }
 

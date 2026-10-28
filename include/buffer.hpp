@@ -20,6 +20,7 @@ public:
     buffer& operator=(buffer&& other) noexcept;
 
     bool create(GLsizeiptr size, const void* data = nullptr);
+    bool write(GLintptr offset, GLsizeiptr size, const void* dat) const;
     bool bind(bufferTarget type, GLuint bindingPoint) const;
 
 private:
