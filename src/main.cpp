@@ -4,6 +4,9 @@
 #include "buffer.hpp"
 #include "texture2d.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/ext.hpp"
+
 int main(void) {
 
     init(true);
@@ -38,13 +41,19 @@ int main(void) {
     texture.create("../assets/textures/red_brick.png", GL_RGB8, true);
     texture.generateMipmaps();
 
-    constexpr GLfloat color[] = {
-        //  r         g         b         a
-        0.5f, 1.0f, 0.5f, 1.0f
-    };
+    glm::mat4 modelMatrix(1.0f);
+    glm::mat4 viewMatrix(1.0f);
+    glm::mat4 projectionMatrix(1.0f);
 
-    buffer colorMixBuffer;
-    colorMixBuffer.create(sizeof(color), color);
+    projectionMatrix = glm::perspective(glm::radians(60.0f), 800.0f/600.0f, 0.1f, 100.0f);
+    viewMatrix = glm::lookAt(glm::vec3(1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    buffer modelMatrixBuffer;
+    modelMatrixBuffer.create(sizeof(glm::mat4), &modelMatrix);
+
+    buffer cameraMatrixBuffer;
+    glm::mat4 cameraMatrixData[] = { viewMatrix, projectionMatrix };
+    cameraMatrixBuffer.create(sizeof(glm::mat4)*2, cameraMatrixData);
 
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
@@ -63,7 +72,8 @@ int main(void) {
         vertexBuffer.bind(bufferTarget::SHADER_STORAGE_BUFFER, 0);
         indexBuffer.bind( bufferTarget::SHADER_STORAGE_BUFFER, 1);
         texture.bind(0);
-        colorMixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 0);
+        cameraMatrixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 0);
+        modelMatrixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 1);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
