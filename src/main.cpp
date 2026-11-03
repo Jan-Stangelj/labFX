@@ -3,9 +3,12 @@
 #include "shader.hpp"
 #include "buffer.hpp"
 #include "texture2d.hpp"
+#include "camera.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
+
+#include <chrono>
 
 int main(void) {
 
@@ -14,7 +17,11 @@ int main(void) {
     window w;
     w.create(800, 600, "labFX");
     glViewport(0, 0, 800, 600);
-    
+
+    GLuint emptyVao = 0;
+    glGenVertexArrays(1, &emptyVao);
+    glBindVertexArray(emptyVao);
+
     constexpr GLfloat vertices[] = {
         //  x          y         z         u         v
         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
@@ -22,18 +29,13 @@ int main(void) {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f,  0.0f, 1.0f // top left
     };
+    buffer vertexBuffer;
+    vertexBuffer.create(sizeof(vertices), vertices);
+
     constexpr GLuint indices[] = {
         0, 1, 3,
         1, 2, 3
     }; 
-
-    GLuint emptyVao = 0;
-    glGenVertexArrays(1, &emptyVao);
-    glBindVertexArray(emptyVao);
-
-    buffer vertexBuffer;
-    vertexBuffer.create(sizeof(vertices), vertices);
-
     buffer indexBuffer;
     indexBuffer.create(sizeof(indices), indices);
 
@@ -42,29 +44,35 @@ int main(void) {
     texture.generateMipmaps();
 
     glm::mat4 modelMatrix(1.0f);
-    glm::mat4 viewMatrix(1.0f);
-    glm::mat4 projectionMatrix(1.0f);
-
-    projectionMatrix = glm::perspective(glm::radians(60.0f), 800.0f/600.0f, 0.1f, 100.0f);
-    viewMatrix = glm::lookAt(glm::vec3(1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
     buffer modelMatrixBuffer;
     modelMatrixBuffer.create(sizeof(glm::mat4), &modelMatrix);
 
-    buffer cameraMatrixBuffer;
-    glm::mat4 cameraMatrixData[] = { viewMatrix, projectionMatrix };
-    cameraMatrixBuffer.create(sizeof(glm::mat4)*2, cameraMatrixData);
+    debugCamera cam;
+    cam.aspectRatio = 800.0f/600.0f;
 
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
 
+    float deltaTime = 0.0f;
+    bool mouseCaptured = false;
     bool running = true;
     while (running) {
+
+        auto start = std::chrono::high_resolution_clock::now();
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) running = false;
+
+            if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_RIGHT) mouseCaptured = w.captureMouse(true);
+            if (event.type == SDL_EVENT_MOUSE_BUTTON_UP   && event.button.button == SDL_BUTTON_RIGHT) { mouseCaptured = false; w.captureMouse(false); }
+            if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST) { mouseCaptured = false; w.captureMouse(false); }
+
+            if (event.type == SDL_EVENT_MOUSE_MOTION && mouseCaptured) cam.updateDirection(event.motion.xrel, -event.motion.yrel);
         }
+
+        if (mouseCaptured) cam.updateOrigin(deltaTime);
+        cam.apply(0);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -72,12 +80,15 @@ int main(void) {
         vertexBuffer.bind(bufferTarget::SHADER_STORAGE_BUFFER, 0);
         indexBuffer.bind( bufferTarget::SHADER_STORAGE_BUFFER, 1);
         texture.bind(0);
-        cameraMatrixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 0);
         modelMatrixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 1);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         w.swapBuffers();
+
+        auto now = std::chrono::high_resolution_clock::now();
+        deltaTime = std::chrono::duration<float>(now - start).count();
+
     }
 
     quit();

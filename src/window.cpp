@@ -55,6 +55,14 @@ bool window::select() const {
     return true;
 }
 
+bool window::captureMouse(bool capture) const {
+    if (!SDL_SetWindowRelativeMouseMode(m_window, capture)) {
+        std::cout << "NOTE: Failed to capture mouse.\n";
+        return false;
+    }
+    return true;
+}
+
 // Source: https://learnopengl.com/In-Practice/Debugging
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char *message, const void *userParam) {
 

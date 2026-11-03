@@ -14,6 +14,8 @@ public:
 
     bool select() const;
 
+    bool captureMouse(bool capture) const;
+
 private:
 
     SDL_Window* m_window = nullptr;
