@@ -4,6 +4,7 @@
 #include "buffer.hpp"
 #include "texture2d.hpp"
 #include "camera.hpp"
+#include "stopwatch.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
@@ -53,12 +54,12 @@ int main(void) {
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
 
-    float deltaTime = 0.0f;
+    double deltaTime = 0.0f;
     bool mouseCaptured = false;
     bool running = true;
     while (running) {
 
-        auto start = std::chrono::high_resolution_clock::now();
+        stopwatch time;
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -86,8 +87,7 @@ int main(void) {
         
         w.swapBuffers();
 
-        auto now = std::chrono::high_resolution_clock::now();
-        deltaTime = std::chrono::duration<float>(now - start).count();
+        deltaTime = time.get();
 
     }
 
