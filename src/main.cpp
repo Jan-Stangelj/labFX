@@ -5,6 +5,7 @@
 #include "texture2d.hpp"
 #include "camera.hpp"
 #include "stopwatch.hpp"
+#include "sampler.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
@@ -44,6 +45,8 @@ int main(void) {
     texture.create("../assets/textures/red_brick.png", GL_RGB8, true);
     texture.generateMipmaps();
 
+    sampler sampl;
+
     glm::mat4 modelMatrix(1.0f);
     buffer modelMatrixBuffer;
     modelMatrixBuffer.create(sizeof(glm::mat4), &modelMatrix);
@@ -81,6 +84,7 @@ int main(void) {
         vertexBuffer.bind(bufferTarget::SHADER_STORAGE_BUFFER, 0);
         indexBuffer.bind( bufferTarget::SHADER_STORAGE_BUFFER, 1);
         texture.bind(0);
+        //sampl.bind(0);
         modelMatrixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 1);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);

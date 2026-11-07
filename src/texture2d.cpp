@@ -56,20 +56,10 @@ bool texture2d::create(GLsizei width, GLsizei height, GLenum internalFormat, boo
         return false;
     }
 
-    GLsizei levels = 1;
+    m_mips = 1;
+    if (mipmapping) m_mips = 1 + std::ceil(std::log2(std::max(width, height)));
 
-    if (mipmapping) levels = 1 + std::ceil(std::log2(std::max(width, height)));
-    m_mips = levels;
-
-    GLint magFilter = mipmapping ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-
-    // TODO: Make these editable
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(m_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTextureParameteri(m_id, GL_TEXTURE_MIN_FILTER, magFilter);
-    glTextureParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTextureStorage2D(m_id, levels, internalFormat, width, height);
+    glTextureStorage2D(m_id, m_mips, internalFormat, width, height);
 
     return true;
 }
