@@ -10,15 +10,13 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 
-#include <chrono>
-
 int main(void) {
 
     init(true);
 
     window w;
-    w.create(800, 600, "labFX");
-    glViewport(0, 0, 800, 600);
+    w.create(1920, 1080, "labFX");
+    glViewport(0, 0, 1920, 1080);
 
     GLuint emptyVao = 0;
     glGenVertexArrays(1, &emptyVao);
@@ -26,10 +24,10 @@ int main(void) {
 
     constexpr GLfloat vertices[] = {
         //  x          y         z         u         v
-        0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+        0.5f,  0.5f, 0.0f, 100.0f, 100.0f, // top right
+        0.5f, -0.5f, 0.0f, 100.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f // top left
+        -0.5f,  0.5f, 0.0f,  0.0f, 100.0f // top left
     };
     buffer vertexBuffer;
     vertexBuffer.create(sizeof(vertices), vertices);
@@ -48,11 +46,13 @@ int main(void) {
     sampler sampl;
 
     glm::mat4 modelMatrix(1.0f);
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, -1.0f, 0.0f));
+    modelMatrix = glm::rotate(modelMatrix, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f));
     buffer modelMatrixBuffer;
     modelMatrixBuffer.create(sizeof(glm::mat4), &modelMatrix);
 
     debugCamera cam;
-    cam.aspectRatio = 800.0f/600.0f;
 
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
@@ -84,7 +84,7 @@ int main(void) {
         vertexBuffer.bind(bufferTarget::SHADER_STORAGE_BUFFER, 0);
         indexBuffer.bind( bufferTarget::SHADER_STORAGE_BUFFER, 1);
         texture.bind(0);
-        //sampl.bind(0);
+        sampl.bind(0);
         modelMatrixBuffer.bind(bufferTarget::UNIFORM_BUFFER, 1);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);

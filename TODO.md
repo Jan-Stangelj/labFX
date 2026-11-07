@@ -4,6 +4,8 @@ Main:
 - ~~ssbo and ubo editing~~
 - ~~basic fly camera~~
 - ~~seperate sampler from texture~~
+- ~~anisotropy option in sampler~~
+- sampler parameter editing
 - texture2d bindless
 - model loading
 - framebuffer
@@ -13,8 +15,6 @@ Misc (in no order):
 - resizable viewport
 - optimized logging
 - include stb as subdirectory
-- anisotropy option in sampler
-- sampler parameter editing
 - no copy only move in window and debugcam
 - ~~simple stopwatch class~~
 - ~~SDL3 error checking~~

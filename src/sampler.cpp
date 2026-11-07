@@ -6,9 +6,13 @@ sampler::sampler() {
     glCreateSamplers(1, &m_id);
 
 glSamplerParameteri(m_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   glSamplerParameteri(m_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glSamplerParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-   glSamplerParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glSamplerParameteri(m_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glSamplerParameteri(m_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glSamplerParameteri(m_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    float maxAniso = 0.0f;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAniso);
+    glSamplerParameterf(m_id, GL_TEXTURE_MAX_ANISOTROPY, std::min(maxAniso, 16.0f));
 }
 sampler::~sampler() {
     glDeleteSamplers(1, &m_id);
