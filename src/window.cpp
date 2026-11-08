@@ -6,10 +6,31 @@
 
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char *message, const void *userParam);
 
-
 window::~window() {
-    SDL_GL_DestroyContext(m_context);
-    SDL_DestroyWindow(m_window);
+    if (m_context != 0) SDL_GL_DestroyContext(m_context);
+    if (m_window != nullptr) SDL_DestroyWindow(m_window);
+}
+
+window::window(window&& other) noexcept {
+    m_window = other.m_window;
+    m_context = other.m_context;
+
+    other.m_window = nullptr;
+    other.m_context = 0;
+}
+
+window& window::operator=(window&& other) noexcept {
+    if (this != &other) {
+        SDL_GL_DestroyContext(m_context);
+        SDL_DestroyWindow(m_window);
+
+        m_window = other.m_window;
+        m_context = other.m_context;
+
+        other.m_window = nullptr;
+        other.m_context = 0;
+    }
+    return *this;
 }
 
 bool window::create(unsigned int width, unsigned int height, const char* title) {

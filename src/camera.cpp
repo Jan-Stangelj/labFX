@@ -6,6 +6,45 @@ debugCamera::debugCamera() {
     m_matrixBuffer.create(sizeof(glm::mat4) * 2);
 }
 
+debugCamera::debugCamera(const debugCamera& other) {
+    fovY = other.fovY;
+    aspectRatio = other.aspectRatio;
+    near = other.near;
+    far = other.far;
+    speed = other.speed;
+    sensitivity = other.sensitivity;
+
+    m_origin = other.m_origin;
+    m_front = other.m_front;
+    m_up = other.m_up;
+    m_right = other.m_right;
+    m_yaw = other.m_yaw;
+    m_pitch = other.m_pitch;
+
+    m_matrixBuffer.create(sizeof(glm::mat4) * 2);
+}
+
+debugCamera& debugCamera::operator=(const debugCamera& other) {
+    if (this != &other) {
+        fovY = other.fovY;
+        aspectRatio = other.aspectRatio;
+        near = other.near;
+        far = other.far;
+        speed = other.speed;
+        sensitivity = other.sensitivity;
+
+        m_origin = other.m_origin;
+        m_front = other.m_front;
+        m_up = other.m_up;
+        m_right = other.m_right;
+        m_yaw = other.m_yaw;
+        m_pitch = other.m_pitch;
+
+        m_matrixBuffer.create(sizeof(glm::mat4) * 2);
+    }
+    return *this;
+}
+
 void debugCamera::updateDirection(float x, float y) {
     x *= sensitivity;
     y *= sensitivity;

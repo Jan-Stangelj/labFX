@@ -15,7 +15,7 @@ Misc (in no order):
 - resizable viewport
 - optimized logging
 - include stb as subdirectory
-- no copy only move in window and debugcam
+- ~~no copy only move in window and move in debugcam~~
 - ~~simple stopwatch class~~
 - ~~SDL3 error checking~~
 - ~~only compile cmake subdirectories if the package isnt found~~ not really optimal cz the package would have to be installed as a dynamic lib dependency when shipping

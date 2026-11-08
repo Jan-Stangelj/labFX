@@ -12,6 +12,9 @@ public:
     debugCamera();
     ~debugCamera() = default;
 
+    debugCamera(const debugCamera& other);
+    debugCamera& operator=(const debugCamera& other);
+
     void updateDirection(float x, float y);
     void updateOrigin(float deltaTime);
     void apply(GLuint bindingPoint = 0);

@@ -8,6 +8,12 @@ public:
     window() = default;
     ~window();
 
+    window(const window&) = delete;
+    window& operator=(const window&) = delete;
+
+    window(window&& other) noexcept;
+    window& operator=(window&& other) noexcept;
+
     bool create(unsigned int width, unsigned int height, const char* title);
 
     bool swapBuffers();
