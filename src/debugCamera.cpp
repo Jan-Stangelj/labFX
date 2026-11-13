@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include "debugCamera.hpp"
 
 #include "glm/ext.hpp"
 

@@ -5,7 +5,7 @@ Main:
 - ~~basic fly camera~~
 - ~~seperate sampler from texture~~
 - ~~anisotropy option in sampler~~
-- sampler parameter editing
+- ~~sampler parameter editing~~
 - texture2d bindless
 - model loading
 - framebuffer

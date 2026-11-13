@@ -3,7 +3,7 @@
 #include "shader.hpp"
 #include "buffer.hpp"
 #include "texture2d.hpp"
-#include "camera.hpp"
+#include "debugCamera.hpp"
 #include "stopwatch.hpp"
 #include "sampler.hpp"
 
